@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
 import thefloydman.pages.data.BlockInfo;
 import thefloydman.pages.logging.LoggerUtils;
+import thefloydman.pages.util.Reference;
 
 public abstract class CheckForConfig {
 
@@ -17,7 +18,7 @@ public abstract class CheckForConfig {
 		String baseDir = Minecraft.getMinecraft().mcDataDir.getAbsolutePath();
 		//baseDir = baseDir.substring(0, baseDir.length() - 1);
 		new File(baseDir + "\\config\\pages").mkdirs();
-		File blocksFile = new File(baseDir + "\\config\\pages\\blocks.csv");
+		File blocksFile = new File(baseDir + "\\config\\pages\\blocks" + Reference.VERSION + ".csv");
 
 		if (!blocksFile.exists() || blocksFile.isDirectory()) {
 

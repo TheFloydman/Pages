@@ -36,7 +36,7 @@ public class BlockInfo {
 
 		String baseDir = Minecraft.getMinecraft().mcDataDir.getAbsolutePath();
 		//baseDir = baseDir.substring(0, baseDir.length() - 1);
-		File blocksFile = new File(baseDir + "\\config\\pages\\blocks.csv");
+		File blocksFile = new File(baseDir + "\\config\\pages\\blocks" + Reference.VERSION + ".csv");
 
 		List<List<String>> records = new ArrayList<>();
 		BufferedReader reader = new BufferedReader(new FileReader(blocksFile));

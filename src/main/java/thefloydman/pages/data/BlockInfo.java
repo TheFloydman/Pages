@@ -13,6 +13,7 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import thefloydman.pages.logging.LoggerUtils;
 import thefloydman.pages.util.Reference;
 
 public class BlockInfo {
@@ -34,8 +35,8 @@ public class BlockInfo {
 	private void getBlockInfoFromFile() throws IOException {
 
 		String baseDir = Minecraft.getMinecraft().mcDataDir.getAbsolutePath();
-		baseDir = baseDir.substring(0, baseDir.length() - 1);
-		File blocksFile = new File(baseDir + "config\\pages\\blocks.csv");
+		//baseDir = baseDir.substring(0, baseDir.length() - 1);
+		File blocksFile = new File(baseDir + "\\config\\pages\\blocks.csv");
 
 		List<List<String>> records = new ArrayList<>();
 		BufferedReader reader = new BufferedReader(new FileReader(blocksFile));

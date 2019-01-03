@@ -38,7 +38,7 @@ public class PagesSymbols {
 			}
 			LoggerUtils.info("Adding page for block " + blockList.get(i).get(1) + ":" + blockList.get(i).get(4),
 					new Object[0]);
-			BlockModifierContainerObject page = BlockModifierContainerObject.createPage(blockList.get(i).get(2),
+			BlockSymbol page = BlockSymbol.createPage(blockList.get(i).get(2),
 					Integer.valueOf(blockList.get(i).get(3)),
 					Block.getBlockFromName(blockList.get(i).get(1) + ":" + blockList.get(i).get(4)),
 					Integer.valueOf(blockList.get(i).get(5)));
@@ -66,43 +66,21 @@ public class PagesSymbols {
 				page.add(category, Integer.valueOf(blockList.get(i).get(cat + 1)));
 			}
 		}
-		/*
-		 * // Vanilla blocks. BlockModifierContainerObject .createPage("Wealth",
-		 * PagesConfig.vanillaBlocks.cardRankBlockOfDiamond, Blocks.DIAMOND_BLOCK, 0)
-		 * .register().add(BlockCategory.CRYSTAL, 8).add(BlockCategory.STRUCTURE,
-		 * 8).add(BlockCategory.SOLID, 8); BlockModifierContainerObject
-		 * .createPage("Greed", PagesConfig.vanillaBlocks.cardRankBlockOfEmerald,
-		 * Blocks.EMERALD_BLOCK, 0) .register().add(BlockCategory.CRYSTAL,
-		 * 9).add(BlockCategory.STRUCTURE, 9).add(BlockCategory.SOLID, 9); // RFTools
-		 * blocks. if (Loader.isModLoaded("rftools")) { Field blockField = null; try {
-		 * blockField = Class.forName("mcjty.rftools.blocks.ModBlocks").getField(
-		 * "dimensionalShardBlock"); System.out.println(blockField.getName()); } catch
-		 * (NoSuchFieldException | SecurityException | ClassNotFoundException e) {
-		 * e.printStackTrace(); } Block block = null; try { block = (Block)
-		 * blockField.get(block); } catch (IllegalArgumentException |
-		 * IllegalAccessException e) { e.printStackTrace(); }
-		 * BlockModifierContainerObject.createPage("Power",
-		 * PagesConfig.rfBlocks.cardRankDimensionalShardOre, block, 0)
-		 * .register().add(BlockCategory.STRUCTURE, 4).add(BlockCategory.SOLID, 4); } //
-		 * Thaumcraft blocks. if (Loader.isModLoaded("thaumcraft")) {
-		 * 
-		 * }
-		 */
 	}
 
-	public static class BlockModifierContainerObject {
+	public static class BlockSymbol {
 		private BlockDescriptor descriptor;
 		private SymbolBlock symbol;
 
-		private BlockModifierContainerObject(final BlockDescriptor descriptor, final SymbolBlock symbol) {
+		private BlockSymbol(final BlockDescriptor descriptor, final SymbolBlock symbol) {
 			this.descriptor = descriptor;
 			this.symbol = symbol;
 		}
 
-		private BlockModifierContainerObject() {
+		private BlockSymbol() {
 		}
 
-		public BlockModifierContainerObject add(final BlockCategory cat, final Integer rank) {
+		public BlockSymbol add(final BlockCategory cat, final Integer rank) {
 			if (this.descriptor == null || this.symbol == null) {
 				return this;
 			}
@@ -114,20 +92,20 @@ public class PagesSymbols {
 			return this;
 		}
 
-		public static BlockModifierContainerObject create(final String word, final int cardrank,
+		public static BlockSymbol create(final String word, final int cardrank,
 				final IBlockState blockstate) {
 			final BlockDescriptor descriptor = new BlockDescriptor(blockstate);
 			final SymbolBlock symbol = new SymbolBlock(descriptor, word);
 			if (SymbolManager.hasBinding(symbol.getRegistryName())) {
 				LoggerUtils.info("Some mod is attempting to register a block symbol over an existing registration.",
 						new Object[0]);
-				return new BlockModifierContainerObject();
+				return new BlockSymbol();
 			}
 			symbol.setCardRank(cardrank);
-			return new BlockModifierContainerObject(descriptor, symbol);
+			return new BlockSymbol(descriptor, symbol);
 		}
 
-		private static BlockModifierContainerObject createPage(final String word, final int cardrank, final Block block,
+		private static BlockSymbol createPage(final String word, final int cardrank, final Block block,
 				final int metadata) {
 			final IBlockState state = block.getStateFromMeta(metadata);
 			if (state == null) {
@@ -140,7 +118,7 @@ public class PagesSymbols {
 			return this.symbol;
 		}
 
-		private BlockModifierContainerObject register() {
+		private BlockSymbol register() {
 			if (this.symbol != null) {
 				SymbolManager.tryAddSymbol(this.symbol);
 			}

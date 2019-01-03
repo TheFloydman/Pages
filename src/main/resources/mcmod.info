@@ -1,0 +1,16 @@
+[
+{
+  "modid": "pages",
+  "name": "Pages",
+  "description": "Additional pages for Mystcraft.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["TheFloydman"],
+  "credits": "Thank you to XCompWiz and HellFirePvP for Mystcraft. Special thanks to Draco18s who helped me better understand Forge's registry events.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

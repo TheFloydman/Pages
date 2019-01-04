@@ -25,22 +25,30 @@ import thefloydman.pages.symbol.modifiers.SymbolBlock;
 
 public class PagesSymbols {
 
+	private static String currentMod = "";
+	private static String currentName = "";
+
 	public static void initialize() {
 
 		List<List<String>> blockList = new BlockInfo().getList();
 
 		for (int i = 1; i < blockList.size(); i++) {
-			if (!Loader.isModLoaded(blockList.get(i).get(1)) || blockList.get(i).get(0).toLowerCase().equals("false")) {
+			boolean enabled = Boolean.valueOf(blockList.get(i).get(0));
+			currentMod = blockList.get(i).get(1);
+			currentName = blockList.get(i).get(2);
+			String word = blockList.get(i).get(3);
+			int cardRank = Integer.valueOf(blockList.get(i).get(4));
+			String itemId = blockList.get(i).get(5);
+			int meta = Integer.valueOf(blockList.get(i).get(6));
+			int catStart = 7;
+			if (!Loader.isModLoaded(currentMod) || enabled == false) {
 				continue;
 			}
-			LoggerUtils.info("Adding page for block " + blockList.get(i).get(1) + ":" + blockList.get(i).get(4),
-					new Object[0]);
-			BlockSymbol page = BlockSymbol.createPage(blockList.get(i).get(2),
-					Integer.valueOf(blockList.get(i).get(3)),
-					Block.getBlockFromName(blockList.get(i).get(1) + ":" + blockList.get(i).get(4)),
-					Integer.valueOf(blockList.get(i).get(5)));
+			LoggerUtils.info("Adding page for block " + currentMod + ":" + itemId, new Object[0]);
+			BlockSymbol page = BlockSymbol.createPage(word, cardRank, Block.getBlockFromName(currentMod + ":" + itemId),
+					meta);
 			page.register();
-			for (int cat = 6; cat < blockList.get(i).size(); cat += 2) {
+			for (int cat = catStart; cat < blockList.get(i).size(); cat += 2) {
 				if (blockList.get(i).get(cat).equals("")) {
 					break;
 				}
@@ -89,12 +97,16 @@ public class PagesSymbols {
 			return this;
 		}
 
-		public static BlockSymbol create(final String word, final int cardrank,
-				final IBlockState blockstate) {
+		public static BlockSymbol create(final String word, final int cardrank, final IBlockState blockstate) {
 			final BlockDescriptor descriptor = new BlockDescriptor(blockstate);
-			final SymbolBlock symbol = new SymbolBlock(descriptor, word);
+			final SymbolBlock symbol;
+			if (currentMod.equals("tconstruct") && !currentName.equals("")) {
+				symbol = new SymbolBlock(descriptor, word, currentMod, currentName);
+			} else {
+				symbol = new SymbolBlock(descriptor, word);
+			}
 			if (SymbolManager.hasBinding(symbol.getRegistryName())) {
-				LoggerUtils.info("Some mod is attempting to register a block symbol over an existing registration.",
+				LoggerUtils.info("Cannot register symbol because it has already been registered.",
 						new Object[0]);
 				return new BlockSymbol();
 			}
@@ -120,6 +132,13 @@ public class PagesSymbols {
 				SymbolManager.tryAddSymbol(this.symbol);
 			}
 			return this;
+		}
+
+		private boolean isTinkers(String name) {
+			if (name.substring(5, 15).equals("tconstruct")) {
+				return true;
+			}
+			return false;
 		}
 	}
 

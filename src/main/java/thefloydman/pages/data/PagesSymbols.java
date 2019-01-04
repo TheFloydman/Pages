@@ -30,10 +30,7 @@ public class PagesSymbols {
 		List<List<String>> blockList = new BlockInfo().getList();
 
 		for (int i = 1; i < blockList.size(); i++) {
-			if (!Loader.isModLoaded(blockList.get(i).get(1))) {
-				break;
-			}
-			if (blockList.get(i).get(0).toLowerCase().equals("false")) {
+			if (!Loader.isModLoaded(blockList.get(i).get(1)) || blockList.get(i).get(0).toLowerCase().equals("false")) {
 				continue;
 			}
 			LoggerUtils.info("Adding page for block " + blockList.get(i).get(1) + ":" + blockList.get(i).get(4),

@@ -1,4 +1,4 @@
-Enabled?,Mod ID,Sub ID (Optional),Word,CardRank,Item ID,Metadata,Category,CategoryRank,,,,
+Enabled?,Mod ID,Sub ID (Optional),Word,CardRank,Block ID,Metadata,Category,CategoryRank,,,,
 true,minecraft,,Vanilla,6,bedrock,0,Solid,5,Terrain,5,Structure,5
 true,minecraft,,Vanilla,2,black_glazed_terracotta,0,Solid,2,Structure,2,Terrain,3
 true,minecraft,,Vanilla,2,blue_glazed_terracotta,0,Solid,2,Structure,2,Terrain,3

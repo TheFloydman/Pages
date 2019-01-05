@@ -24,7 +24,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import thefloydman.pages.util.Reference;
 
-@Config(modid = Reference.MOD_ID)
+//@Config(modid = Reference.MOD_ID)
 public class PagesConfig {
 
 	@Name("vanilla")

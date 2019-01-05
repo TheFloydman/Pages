@@ -21,23 +21,14 @@ import thefloydman.pages.util.Reference;
 public class SymbolBlock extends PagesSymbolBase {
 	public final BlockDescriptor blockDescriptor;
 	private String unlocalizedBlockName;
-	private String modId = "";
-	private String nameTinkers = "";
+	private String subID = "";
 
-	public SymbolBlock(final BlockDescriptor block, final String word) {
+	public SymbolBlock(final BlockDescriptor block, final String word, final String subID) {
 		super(getSymbolIdentifier(block.blockstate));
 		this.blockDescriptor = block;
 		this.setWords(new String[] { "Transform", "Constraint", word, this.registryName.getResourcePath() });
 		this.unlocalizedBlockName = getUnlocalizedName(block.blockstate);
-	}
-
-	public SymbolBlock(final BlockDescriptor block, final String word, final String modId, final String name) {
-		super(getSymbolIdentifier(block.blockstate));
-		this.blockDescriptor = block;
-		this.setWords(new String[] { "Transform", "Constraint", word, this.registryName.getResourcePath() });
-		this.unlocalizedBlockName = getUnlocalizedName(block.blockstate);
-		this.modId = modId;
-		this.nameTinkers = name;
+		this.subID = subID;
 	}
 
 	public static ResourceLocation getSymbolIdentifier(final IBlockState blockstate) {
@@ -80,8 +71,8 @@ public class SymbolBlock extends PagesSymbolBase {
 	@Override
 	public String generateLocalizedName() {
 		String blockName = I18n.format(this.unlocalizedBlockName + ".name", new Object[0]);
-		if (isTinkers(blockName)) {
-			blockName = I18n.format(this.unlocalizedBlockName + "." + this.nameTinkers + ".name", new Object[0]);
+		if (!this.subID.equals("")) {
+			blockName = I18n.format(this.unlocalizedBlockName + "." + this.subID + ".name", new Object[0]);
 		}
 		// Molten seared stone from Tinkers' Construct has the name "Seared Stone
 		// Block", so this gives the solid version a unique name.
@@ -97,12 +88,5 @@ public class SymbolBlock extends PagesSymbolBase {
 	@Override
 	public void registerLogic(final AgeDirector controller, final long seed) {
 		ModifierUtils.pushBlock(controller, this.blockDescriptor);
-	}
-
-	private boolean isTinkers(String name) {
-		if (this.modId.equals("tconstruct")) {
-			return true;
-		}
-		return false;
 	}
 }

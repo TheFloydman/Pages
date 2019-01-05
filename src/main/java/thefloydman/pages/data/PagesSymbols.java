@@ -26,7 +26,7 @@ import thefloydman.pages.symbol.modifiers.SymbolBlock;
 public class PagesSymbols {
 
 	private static String currentMod = "";
-	private static String currentName = "";
+	private static String subID = "";
 
 	public static void initialize() {
 
@@ -35,7 +35,7 @@ public class PagesSymbols {
 		for (int i = 1; i < blockList.size(); i++) {
 			boolean enabled = Boolean.valueOf(blockList.get(i).get(0));
 			currentMod = blockList.get(i).get(1);
-			currentName = blockList.get(i).get(2);
+			subID = blockList.get(i).get(2);
 			String word = blockList.get(i).get(3);
 			int cardRank = Integer.valueOf(blockList.get(i).get(4));
 			String itemId = blockList.get(i).get(5);
@@ -99,12 +99,7 @@ public class PagesSymbols {
 
 		public static BlockSymbol create(final String word, final int cardrank, final IBlockState blockstate) {
 			final BlockDescriptor descriptor = new BlockDescriptor(blockstate);
-			final SymbolBlock symbol;
-			if (currentMod.equals("tconstruct") && !currentName.equals("")) {
-				symbol = new SymbolBlock(descriptor, word, currentMod, currentName);
-			} else {
-				symbol = new SymbolBlock(descriptor, word);
-			}
+			final SymbolBlock symbol = new SymbolBlock(descriptor, word, subID);
 			if (SymbolManager.hasBinding(symbol.getRegistryName())) {
 				LoggerUtils.info("Cannot register symbol because it has already been registered.",
 						new Object[0]);

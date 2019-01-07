@@ -4,31 +4,35 @@ import com.xcompwiz.mystcraft.api.symbol.BlockDescriptor;
 import com.xcompwiz.mystcraft.api.symbol.ModifierUtils;
 import com.xcompwiz.mystcraft.api.world.AgeDirector;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import thefloydman.pages.logging.LoggerUtils;
 import thefloydman.pages.symbol.PagesSymbolBase;
 import thefloydman.pages.util.Reference;
 
 public class SymbolBlock extends PagesSymbolBase {
 	public final BlockDescriptor blockDescriptor;
 	private String unlocalizedBlockName;
+	private String localizationOverride = "";
 	private String subID = "";
 
-	public SymbolBlock(final BlockDescriptor block, final String word, final String subID) {
+	public SymbolBlock(final BlockDescriptor block, final String word, final String subID,
+			final String localizationOverride) {
 		super(getSymbolIdentifier(block.blockstate));
 		this.blockDescriptor = block;
 		this.setWords(new String[] { "Transform", "Constraint", word, this.registryName.getResourcePath() });
 		this.unlocalizedBlockName = getUnlocalizedName(block.blockstate);
 		this.subID = subID;
+		this.localizationOverride = localizationOverride;
 	}
 
 	public static ResourceLocation getSymbolIdentifier(final IBlockState blockstate) {
@@ -70,18 +74,22 @@ public class SymbolBlock extends PagesSymbolBase {
 
 	@Override
 	public String generateLocalizedName() {
-		String blockName = I18n.format(this.unlocalizedBlockName + ".name", new Object[0]);
-		if (!this.subID.equals("")) {
-			blockName = I18n.format(this.unlocalizedBlockName + "." + this.subID + ".name", new Object[0]);
+		if (this.localizationOverride.trim().length() > 0) {
+			return this.localizationOverride;
 		}
-		// Molten seared stone from Tinkers' Construct has the name "Seared Stone
-		// Block", so this gives the solid version a unique name.
-		if (blockName.equals("Seared Stone")) {
-			return "Solid Seared Stone Block";
+		String blockName = this.unlocalizedBlockName;
+		if (this.subID.trim().length() > 0) {
+			blockName += "." + this.subID;
 		}
+		if (!blockName.endsWith(".name")) {
+			blockName += ".name";
+		}
+		blockName = I18n.format(blockName, new Object[0]);
+
 		if (blockName.contains("Block")) {
 			return blockName;
 		}
+
 		return blockName + " Block";
 	}
 

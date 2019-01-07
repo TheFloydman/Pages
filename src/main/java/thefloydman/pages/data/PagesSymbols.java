@@ -25,8 +25,8 @@ import thefloydman.pages.symbol.modifiers.SymbolBlock;
 
 public class PagesSymbols {
 
-	private static String currentMod = "";
 	private static String subID = "";
+	private static String localizationOverride = "";
 
 	public static void initialize() {
 
@@ -34,18 +34,19 @@ public class PagesSymbols {
 
 		for (int i = 1; i < blockList.size(); i++) {
 			boolean enabled = Boolean.valueOf(blockList.get(i).get(0));
-			currentMod = blockList.get(i).get(1);
-			subID = blockList.get(i).get(2);
-			String word = blockList.get(i).get(3);
-			int cardRank = Integer.valueOf(blockList.get(i).get(4));
-			String itemId = blockList.get(i).get(5);
-			int meta = Integer.valueOf(blockList.get(i).get(6));
-			int catStart = 7;
-			if (!Loader.isModLoaded(currentMod) || enabled == false) {
+			String modID = blockList.get(i).get(1);
+			String word = blockList.get(i).get(2);
+			int cardRank = Integer.valueOf(blockList.get(i).get(3));
+			String blockId = blockList.get(i).get(4);
+			int meta = Integer.valueOf(blockList.get(i).get(5));
+			subID = blockList.get(i).get(6);
+			localizationOverride = blockList.get(i).get(7);
+			int catStart = 8;
+			if (!Loader.isModLoaded(modID) || enabled == false) {
 				continue;
 			}
-			LoggerUtils.info("Adding page for block " + currentMod + ":" + itemId, new Object[0]);
-			BlockSymbol page = BlockSymbol.createPage(word, cardRank, Block.getBlockFromName(currentMod + ":" + itemId),
+			LoggerUtils.info("Adding page for block " + modID + ":" + blockId, new Object[0]);
+			BlockSymbol page = BlockSymbol.createPage(word, cardRank, Block.getBlockFromName(modID + ":" + blockId),
 					meta);
 			page.register();
 			for (int cat = catStart; cat < blockList.get(i).size(); cat += 2) {
@@ -99,7 +100,7 @@ public class PagesSymbols {
 
 		public static BlockSymbol create(final String word, final int cardrank, final IBlockState blockstate) {
 			final BlockDescriptor descriptor = new BlockDescriptor(blockstate);
-			final SymbolBlock symbol = new SymbolBlock(descriptor, word, subID);
+			final SymbolBlock symbol = new SymbolBlock(descriptor, word, subID, localizationOverride);
 			if (SymbolManager.hasBinding(symbol.getRegistryName())) {
 				LoggerUtils.info("Cannot register symbol because it has already been registered.",
 						new Object[0]);

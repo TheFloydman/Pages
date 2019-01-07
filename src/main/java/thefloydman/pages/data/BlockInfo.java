@@ -12,7 +12,9 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import thefloydman.pages.logging.LoggerUtils;
 import thefloydman.pages.util.Reference;
 
@@ -21,10 +23,10 @@ public class BlockInfo {
 	private List<List<String>> list;
 	private List<List<String>> defaultList;
 
-	public BlockInfo() {
+	public BlockInfo(File configDir) {
 
 		try {
-			getBlockInfoFromFile();
+			getBlockInfoFromFile(configDir);
 			getDefaultBlockInfoFromFile();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -32,11 +34,9 @@ public class BlockInfo {
 
 	}
 
-	private void getBlockInfoFromFile() throws IOException {
+	private void getBlockInfoFromFile(File configDir) throws IOException {
 
-		String baseDir = Minecraft.getMinecraft().mcDataDir.getAbsolutePath();
-		//baseDir = baseDir.substring(0, baseDir.length() - 1);
-		File blocksFile = new File(baseDir + "\\config\\pages\\blocks" + Reference.VERSION + ".csv");
+		File blocksFile = new File(configDir.getAbsolutePath() + "\\pages\\blocks" + Reference.VERSION + ".csv");
 
 		List<List<String>> records = new ArrayList<>();
 		BufferedReader reader = new BufferedReader(new FileReader(blocksFile));
@@ -54,10 +54,9 @@ public class BlockInfo {
 	}
 	
 	private void getDefaultBlockInfoFromFile() throws IOException {
-
 		List<List<String>> records = new ArrayList<>();
 		ResourceLocation loc = Reference.forPages("blocks.csv");
-		InputStream in = Minecraft.getMinecraft().getResourceManager().getResource(loc).getInputStream();
+		InputStream in = getClass().getClassLoader().getResourceAsStream("assets/pages/blocks.csv");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		String line;
 		while ((line = reader.readLine()) != null) {

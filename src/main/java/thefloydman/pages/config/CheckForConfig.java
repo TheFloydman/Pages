@@ -7,23 +7,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import thefloydman.pages.data.BlockInfo;
 import thefloydman.pages.logging.LoggerUtils;
 import thefloydman.pages.util.Reference;
 
 public abstract class CheckForConfig {
 
-	public static void init() throws IOException {
+	public static void init(File configDir) throws IOException {
 
-		String baseDir = Minecraft.getMinecraft().mcDataDir.getAbsolutePath();
-		//baseDir = baseDir.substring(0, baseDir.length() - 1);
-		new File(baseDir + "\\config\\pages").mkdirs();
-		File blocksFile = new File(baseDir + "\\config\\pages\\blocks" + Reference.VERSION + ".csv");
+		new File(configDir.getAbsolutePath() + "\\pages").mkdirs();
+		File blocksFile = new File(configDir.getAbsolutePath() + "\\pages\\blocks" + Reference.VERSION + ".csv");
 
 		if (!blocksFile.exists() || blocksFile.isDirectory()) {
 
 			FileWriter writer = new FileWriter(blocksFile);
-			List<List<String>> blockList = new BlockInfo().getDefaultList();
+			List<List<String>> blockList = new BlockInfo(configDir).getDefaultList();
 			boolean firstTime = true;
 			for (int i = 0; i < blockList.size(); i++) {
 				String line = blockList.get(i).stream().collect(Collectors.joining(","));

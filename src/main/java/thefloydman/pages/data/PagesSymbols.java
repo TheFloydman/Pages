@@ -1,5 +1,6 @@
 package thefloydman.pages.data;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import com.xcompwiz.util.CollectionUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -28,9 +30,9 @@ public class PagesSymbols {
 	private static String subID = "";
 	private static String localizationOverride = "";
 
-	public static void initialize() {
+	public static void initialize(File configDir) {
 
-		List<List<String>> blockList = new BlockInfo().getList();
+		List<List<String>> blockList = new BlockInfo(configDir).getList();
 
 		for (int i = 1; i < blockList.size(); i++) {
 			boolean enabled = Boolean.valueOf(blockList.get(i).get(0));

@@ -1,8 +1,17 @@
 package thefloydman.pages.data;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.ResourceLocation;
+
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
 import com.xcompwiz.mystcraft.api.symbol.BlockCategory;
 import com.xcompwiz.mystcraft.api.symbol.BlockDescriptor;
@@ -12,15 +21,6 @@ import com.xcompwiz.mystcraft.symbol.SymbolManager;
 import com.xcompwiz.mystcraft.world.AgeController;
 import com.xcompwiz.util.CollectionUtils;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
-import thefloydman.pages.config.PagesConfig;
 import thefloydman.pages.logging.LoggerUtils;
 import thefloydman.pages.symbol.PagesSymbolBase;
 import thefloydman.pages.symbol.modifiers.SymbolBlock;
@@ -32,17 +32,32 @@ public class PagesSymbols {
 
 	public static void initialize(File configDir) {
 
-		List<List<String>> blockList = new BlockInfo(configDir).getList();
+		List<List<String>> blockList = null;
+		try {
+			blockList = BlockInfo.getBlockInfoFromConfig(configDir);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 
 		for (int i = 1; i < blockList.size(); i++) {
 			boolean enabled = Boolean.valueOf(blockList.get(i).get(0));
-			String modID = blockList.get(i).get(1);
-			String word = blockList.get(i).get(2);
+			String modID = String.valueOf(blockList.get(i).get(1));
+			if (modID.trim().equals("") || modID == null) {
+				modID = "minecraft";
+			}
+			String word = String.valueOf(blockList.get(i).get(2));
 			int cardRank = Integer.valueOf(blockList.get(i).get(3));
-			String blockId = blockList.get(i).get(4);
+			String blockId = String.valueOf(blockList.get(i).get(4));
 			int meta = Integer.valueOf(blockList.get(i).get(5));
-			subID = blockList.get(i).get(6);
-			localizationOverride = blockList.get(i).get(7);
+			
+			try {
+				subID = String.valueOf(blockList.get(i).get(6));
+			} catch (ArrayIndexOutOfBoundsException e) {
+			}
+			try {
+				localizationOverride = String.valueOf(blockList.get(i).get(7));
+			} catch (ArrayIndexOutOfBoundsException e) {
+			}
 			int catStart = 8;
 			if (!Loader.isModLoaded(modID) || enabled == false) {
 				continue;
@@ -58,7 +73,7 @@ public class PagesSymbols {
 
 				Field categoryField = null;
 				try {
-					String catLower = blockList.get(i).get(cat);
+					String catLower = String.valueOf(blockList.get(i).get(cat));
 					String catUpper = catLower.toUpperCase();
 					categoryField = Class.forName("com.xcompwiz.mystcraft.api.symbol.BlockCategory").getField(catUpper);
 				} catch (NoSuchFieldException | SecurityException | ClassNotFoundException e) {
@@ -104,8 +119,7 @@ public class PagesSymbols {
 			final BlockDescriptor descriptor = new BlockDescriptor(blockstate);
 			final SymbolBlock symbol = new SymbolBlock(descriptor, word, subID, localizationOverride);
 			if (SymbolManager.hasBinding(symbol.getRegistryName())) {
-				LoggerUtils.info("Cannot register symbol because it has already been registered.",
-						new Object[0]);
+				LoggerUtils.info("Cannot register symbol because it has already been registered.", new Object[0]);
 				return new BlockSymbol();
 			}
 			symbol.setCardRank(cardrank);
@@ -131,13 +145,5 @@ public class PagesSymbols {
 			}
 			return this;
 		}
-
-		private boolean isTinkers(String name) {
-			if (name.substring(5, 15).equals("tconstruct")) {
-				return true;
-			}
-			return false;
-		}
 	}
-
 }

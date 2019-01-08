@@ -2,18 +2,18 @@ package thefloydman.pages.proxy;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.server.MinecraftServer;
+
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import thefloydman.pages.config.CheckForConfig;
+
+import thefloydman.pages.data.BlockInfo;
 import thefloydman.pages.data.PagesSymbols;
 import thefloydman.pages.util.Reference;
 
@@ -22,10 +22,10 @@ public class CommonProxy {
 	
 	File configDir;
 
-	public void preInit(FMLPreInitializationEvent event) throws IOException {
+	public void preInit(FMLPreInitializationEvent event) throws IOException, URISyntaxException {
 
 		configDir = event.getModConfigurationDirectory();
-		CheckForConfig.init(configDir);
+		BlockInfo.checkForConfig(configDir);
 
 	}
 

@@ -21,6 +21,7 @@ import thefloydman.pages.proxy.CommonProxy;
 import thefloydman.pages.util.Reference;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import org.apache.logging.log4j.Logger;
 
@@ -34,7 +35,7 @@ public class Pages {
 	private static Logger logger;
 
 	@EventHandler
-	public static void preInit(FMLPreInitializationEvent event) throws IOException {
+	public static void preInit(FMLPreInitializationEvent event) throws IOException, URISyntaxException {
 
 		proxy.preInit(event);
 

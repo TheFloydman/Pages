@@ -15,28 +15,60 @@ import java.util.stream.Collectors;
 
 import com.google.common.io.Files;
 
+import net.minecraft.util.ResourceLocation;
 import thefloydman.pages.util.Reference;
 
-public abstract class BlockInfo {
+public class BlockInfo {
 
-	public static void checkForConfig(File configDir) throws IOException, URISyntaxException {
-		new File(configDir.getAbsolutePath() + "\\pages").mkdirs();
+	public void checkForConfig(File configDir) throws IOException, URISyntaxException {
+		new File(configDir.getAbsolutePath() + "/pages").mkdirs();
+		System.out.println(configDir.getAbsolutePath() + "/pages");
 		createFileIfVoid("assets/pages/blocks.csv",
-				configDir.getAbsolutePath() + "\\pages\\blocks_" + Reference.VERSION + ".csv");
-		createFileIfVoid("assets/pages/blocks_custom.csv", configDir.getAbsolutePath() + "\\pages\\blocks_custom.csv");
+				configDir.getAbsolutePath() + "/pages/blocks_" + Reference.VERSION + ".csv");
+		System.out.println(configDir.getAbsolutePath() + "/pages/blocks_" + Reference.VERSION + ".csv");
+		createFileIfVoid("assets/pages/blocks_custom.csv",
+				configDir.getAbsolutePath() + "/pages/blocks_custom.csv");
+		System.out.println(configDir.getAbsolutePath() + "/pages/blocks_custom.csv");
 	}
 
-	private static void createFileIfVoid(String pathFrom, String pathTo) throws IOException, URISyntaxException {
+	private void createFileIfVoid(String fileFrom, String pathTo) throws IOException {
 		File file = new File(pathTo);
+
 		if (!file.exists() || file.isDirectory()) {
-			Files.copy(new File(BlockInfo.class.getClassLoader().getResource(pathFrom).toURI()), file);
+
+			FileWriter writer = new FileWriter(file);
+			List<List<String>> blockList = getDefaultBlockInfoFromAsset(fileFrom);
+			boolean firstTime = true;
+			for (int i = 0; i < blockList.size(); i++) {
+				String line = blockList.get(i).stream().collect(Collectors.joining(","));
+				if (firstTime == false) {
+					writer.write("\n");
+				}
+				writer.write(line);
+				firstTime = false;
+			}
+			writer.close();
+
 		}
+	}
+
+	private List<List<String>> getDefaultBlockInfoFromAsset(String fileFrom) throws IOException {
+		List<List<String>> records = new ArrayList<>();
+		InputStream in = getClass().getClassLoader().getResourceAsStream(fileFrom);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		String line;
+		while ((line = reader.readLine()) != null) {
+			String[] values = line.split(",");
+			records.add(Arrays.asList(values));
+		}
+		return records;
+
 	}
 
 	public static List<List<String>> getBlockInfoFromConfig(File configDir) throws IOException {
 
-		File fileBlocks = new File(configDir.getAbsolutePath() + "\\pages\\blocks_" + Reference.VERSION + ".csv");
-		File fileCustomBlocks = new File(configDir.getAbsolutePath() + "\\pages\\blocks_custom.csv");
+		File fileBlocks = new File(configDir.getAbsolutePath() + "/pages/blocks_" + Reference.VERSION + ".csv");
+		File fileCustomBlocks = new File(configDir.getAbsolutePath() + "/pages/blocks_custom.csv");
 
 		List<List<String>> records = new ArrayList<>();
 

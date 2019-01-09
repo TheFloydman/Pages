@@ -34,7 +34,7 @@ public class PagesSymbols {
 
 		List<List<String>> blockList = null;
 		try {
-			blockList = BlockInfo.getBlockInfoFromConfig(configDir);
+			blockList = new BlockInfo().getBlockInfoFromConfig(configDir);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

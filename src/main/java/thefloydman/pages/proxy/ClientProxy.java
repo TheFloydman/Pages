@@ -28,7 +28,7 @@ public class ClientProxy extends CommonProxy {
 	public void preInit(FMLPreInitializationEvent event) throws IOException, URISyntaxException {
 
 		configDir = event.getModConfigurationDirectory();
-		BlockInfo.checkForConfig(configDir);
+		new BlockInfo().checkForConfig(configDir);
 
 	}
 

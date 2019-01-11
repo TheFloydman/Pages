@@ -22,13 +22,10 @@ public class BlockInfo {
 
 	public void checkForConfig(File configDir) throws IOException, URISyntaxException {
 		new File(configDir.getAbsolutePath() + "/pages").mkdirs();
-		System.out.println(configDir.getAbsolutePath() + "/pages");
 		createFileIfVoid("assets/pages/blocks.csv",
 				configDir.getAbsolutePath() + "/pages/blocks_" + Reference.VERSION + ".csv");
-		System.out.println(configDir.getAbsolutePath() + "/pages/blocks_" + Reference.VERSION + ".csv");
 		createFileIfVoid("assets/pages/blocks_custom.csv",
 				configDir.getAbsolutePath() + "/pages/blocks_custom.csv");
-		System.out.println(configDir.getAbsolutePath() + "/pages/blocks_custom.csv");
 	}
 
 	private void createFileIfVoid(String fileFrom, String pathTo) throws IOException {

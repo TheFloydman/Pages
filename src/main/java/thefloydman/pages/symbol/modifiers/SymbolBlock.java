@@ -3,6 +3,7 @@ package thefloydman.pages.symbol.modifiers;
 import com.xcompwiz.mystcraft.api.symbol.BlockDescriptor;
 import com.xcompwiz.mystcraft.api.symbol.ModifierUtils;
 import com.xcompwiz.mystcraft.api.world.AgeDirector;
+import com.xcompwiz.mystcraft.logging.LoggerUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -23,16 +24,20 @@ public class SymbolBlock extends PagesSymbolBase {
 	public final BlockDescriptor blockDescriptor;
 	private String unlocalizedBlockName;
 	private String localizationOverride = "";
+	private String modID = "";
+	private String blockID = "";
 	private String subID = "";
 
-	public SymbolBlock(final BlockDescriptor block, final String word, final String subID,
-			final String localizationOverride) {
+	public SymbolBlock(final BlockDescriptor block, final String word, final String modID, final String blockID,
+			final String subID, final String localizationOverride) {
 		super(getSymbolIdentifier(block.blockstate));
 		this.blockDescriptor = block;
 		this.setWords(new String[] { "Transform", "Constraint", word, this.registryName.getResourcePath() });
-		this.unlocalizedBlockName = getUnlocalizedName(block.blockstate);
+		this.modID = modID;
+		this.blockID = blockID;
 		this.subID = subID;
 		this.localizationOverride = localizationOverride;
+		this.unlocalizedBlockName = getUnlocalizedName(block.blockstate);
 	}
 
 	public static ResourceLocation getSymbolIdentifier(final IBlockState blockstate) {
@@ -49,7 +54,7 @@ public class SymbolBlock extends PagesSymbolBase {
 		return true;
 	}
 
-	private static String getUnlocalizedName(final IBlockState blockstate) {
+	private String getUnlocalizedName(final IBlockState blockstate) {
 		ItemStack attempt = ItemStack.EMPTY;
 		try {
 			attempt = blockstate.getBlock().getPickBlock(blockstate, (RayTraceResult) null, (World) null,
@@ -77,7 +82,20 @@ public class SymbolBlock extends PagesSymbolBase {
 		if (this.localizationOverride.trim().length() > 0) {
 			return this.localizationOverride;
 		}
-		String blockName = this.unlocalizedBlockName;
+
+		// Botania localization
+		if (this.modID.equals("botania")) {
+			String nameBotania = "tile.botania:" + this.unlocalizedBlockName.trim().substring(5) + this.subID + ".name";
+			nameBotania = I18n.format(nameBotania, new Object[0]);
+			if (!nameBotania.contains("Block")) {
+				nameBotania += " Block";
+			}
+			return nameBotania;
+		}
+
+		String blockName = this.unlocalizedBlockName.trim();
+
+		// General-purpose localization
 		if (this.subID.trim().length() > 0) {
 			blockName += "." + this.subID;
 		}

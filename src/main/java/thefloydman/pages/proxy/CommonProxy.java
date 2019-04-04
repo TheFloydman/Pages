@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import com.xcompwiz.mystcraft.instability.InstabilityBlockManager;
+
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 
 import net.minecraftforge.event.RegistryEvent;
@@ -30,11 +33,11 @@ public class CommonProxy {
 	}
 
 	public void init(FMLInitializationEvent event) {
-
+		
 	}
 
 	public void postInit(FMLPostInitializationEvent event) {
-
+		
 	}
 	
 	public void itemReg(RegistryEvent.Register<Item> event) {

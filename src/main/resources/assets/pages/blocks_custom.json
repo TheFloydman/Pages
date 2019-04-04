@@ -1,0 +1,27 @@
+[
+    //              {
+    // (string)         "mod_id": "",
+    // (string)         "block_id": "",
+    // (string)         "sub_id": "",
+    // (string)         "localization_nonstandard": "",
+    // (string)         "localization_override": "",
+    // (string)         "symbol_id": "",
+    // (string)         "word": "",
+    // (int)            "loot_weight": ,
+    //                  "properties": [
+    //                      {
+    // (string)                 "id": "",
+    // (string)                 "value": ""
+    //                      }
+    //                  ],
+    //                  "categories": [
+    //                      {
+    // (string)                 "mod_id": "",
+    // (string)                 "category_id": "",
+    // (int)                    "weight": 
+    //                      }
+    //                  ],
+    // (float)          "instability_base": ,
+    // (float)          "instability_exposed": 
+    //              }
+]

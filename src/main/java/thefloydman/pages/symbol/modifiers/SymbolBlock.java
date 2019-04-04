@@ -1,5 +1,7 @@
 package thefloydman.pages.symbol.modifiers;
 
+import javax.annotation.Nullable;
+
 import com.xcompwiz.mystcraft.api.symbol.BlockDescriptor;
 import com.xcompwiz.mystcraft.api.symbol.ModifierUtils;
 import com.xcompwiz.mystcraft.api.world.AgeDirector;
@@ -9,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -24,29 +27,32 @@ public class SymbolBlock extends PagesSymbolBase {
 	public final BlockDescriptor blockDescriptor;
 	private String unlocalizedBlockName;
 	private String localizationOverride = "";
-	private String modID = "";
-	private String blockID = "";
-	private String subID = "";
+	private String localizationNonstandard = "";
+	private String modId = "";
+	private String blockId = "";
+	private String subId = "";
 
-	public SymbolBlock(final BlockDescriptor block, final String word, final String modID, final String blockID,
-			final String subID, final String localizationOverride) {
-		super(getSymbolIdentifier(block.blockstate));
+	public SymbolBlock(final BlockDescriptor block, final String word, final String modId, final String blockId,
+			final String subId, final String localizationOverride, @Nullable final String symbolId,
+			final String localizationNonstandard) {
+		super(getSymbolIdentifier(block.blockstate, symbolId));
 		this.blockDescriptor = block;
-		this.setWords(new String[] { "Transform", "Constraint", word, this.registryName.getResourcePath() });
-		this.modID = modID;
-		this.blockID = blockID;
-		this.subID = subID;
+		this.modId = modId;
+		this.blockId = blockId;
+		this.subId = subId;
 		this.localizationOverride = localizationOverride;
+		this.localizationNonstandard = localizationNonstandard;
 		this.unlocalizedBlockName = getUnlocalizedName(block.blockstate);
 	}
 
-	public static ResourceLocation getSymbolIdentifier(final IBlockState blockstate) {
+	public static ResourceLocation getSymbolIdentifier(final IBlockState blockstate, @Nullable final String symbolId) {
 		String domain = blockstate.getBlock().getRegistryName().getResourceDomain();
-		if (domain.equals("minecraft")) {
-			domain = Reference.MOD_ID;
+		if (symbolId != null && !symbolId.isEmpty()) {
+			return new ResourceLocation(domain, symbolId);
 		}
-		return new ResourceLocation(domain, "block_" + blockstate.getBlock().getRegistryName().getResourcePath() + "_"
-				+ blockstate.getBlock().getMetaFromState(blockstate));
+		return new ResourceLocation(domain,
+				"block_" + blockstate.getBlock().getRegistryName().getResourcePath() + "_"
+						+ blockstate.getBlock().getMetaFromState(blockstate));
 	}
 
 	@Override
@@ -83,36 +89,47 @@ public class SymbolBlock extends PagesSymbolBase {
 			return this.localizationOverride;
 		}
 
+		String blockName;
+
+		if (this.localizationNonstandard.trim().length() > 0) {
+			blockName = this.localizationNonstandard.trim();
+			blockName = I18n.format(blockName, new Object[0]);
+			blockName = addBlockIfAbsent(blockName);
+			return blockName;
+		}
+
 		// Botania localization
-		if (this.modID.equals("botania")) {
-			String nameBotania = "tile.botania:" + this.unlocalizedBlockName.trim().substring(5) + this.subID + ".name";
+		if (this.modId.equals("botania")) {
+			String nameBotania = "tile.botania:" + this.unlocalizedBlockName.trim().substring(5) + this.subId + ".name";
 			nameBotania = I18n.format(nameBotania, new Object[0]);
-			if (!nameBotania.contains("Block")) {
-				nameBotania += " Block";
-			}
+			nameBotania = addBlockIfAbsent(nameBotania);
 			return nameBotania;
 		}
 
-		String blockName = this.unlocalizedBlockName.trim();
+		blockName = this.unlocalizedBlockName.trim();
 
 		// General-purpose localization
-		if (this.subID.trim().length() > 0) {
-			blockName += "." + this.subID;
+		if (this.subId.trim().length() > 0) {
+			blockName += "." + this.subId;
 		}
 		if (!blockName.endsWith(".name")) {
 			blockName += ".name";
 		}
 		blockName = I18n.format(blockName, new Object[0]);
+		blockName = addBlockIfAbsent(blockName);
+		return blockName;
+	}
 
-		if (blockName.contains("Block")) {
-			return blockName;
+	private String addBlockIfAbsent(String str) {
+		if (!str.contains("Block")) {
+			str += " Block";
 		}
-
-		return blockName + " Block";
+		return str;
 	}
 
 	@Override
 	public void registerLogic(final AgeDirector controller, final long seed) {
 		ModifierUtils.pushBlock(controller, this.blockDescriptor);
 	}
+
 }

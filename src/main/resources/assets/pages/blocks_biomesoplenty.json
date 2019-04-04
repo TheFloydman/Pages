@@ -1,0 +1,225 @@
+[
+    {
+        "mod_id": "biomesoplenty",
+        "block_id": "ash_block",
+        "symbol_id": "block_ash",
+        "word": "Plenty",
+        "loot_weight": 2,
+        "categories": [
+            {
+                "category_id": "BlockSolid",
+                "weight": 3
+            },
+            {
+                "category_id": "BlockStructure",
+                "weight": 4
+            },
+            {
+                "category_id": "BlockTerrain",
+                "weight": 4
+            }
+        ]
+    },
+    {
+        "mod_id": "biomesoplenty",
+        "block_id": "bamboo_thatching",
+        "symbol_id": "block_bamboo_thatching",
+        "word": "Plenty",
+        "loot_weight": 5,
+        "categories": [
+            {
+                "category_id": "BlockSolid",
+                "weight": 4
+            },
+            {
+                "category_id": "BlockStructure",
+                "weight": 4
+            }
+        ]
+    },
+    {
+        "mod_id": "biomesoplenty",
+        "block_id": "biome_block",
+        "symbol_id": "block_biome",
+        "word": "Plenty",
+        "loot_weight": 5,
+        "categories": [
+            {
+                "category_id": "BlockSolid",
+                "weight": 5
+            },
+            {
+                "category_id": "BlockStructure",
+                "weight": 5
+            }
+        ],
+        "instability_base": 1.0,
+        "instability_exposed": 5.0
+    },
+    {
+        "mod_id": "biomesoplenty",
+        "block_id": "crystal",
+        "symbol_id": "block_crystal",
+        "word": "Plenty",
+        "loot_weight": 4,
+        "categories": [
+            {
+                "category_id": "BlockSolid",
+                "weight": 5
+            },
+            {
+                "category_id": "BlockStructure",
+                "weight": 5
+            }
+        ],
+        "instability_base": 1.0,
+        "instability_exposed": 2.0
+    },
+    {
+        "mod_id": "biomesoplenty",
+        "block_id": "dried_sand",
+        "symbol_id": "block_dried_sand",
+        "word": "Plenty",
+        "loot_weight": 2,
+        "categories": [
+            {
+                "category_id": "BlockTerrain",
+                "weight": 5
+            }
+        ]
+    },
+    {
+        "mod_id": "biomesoplenty",
+        "block_id": "flesh",
+        "symbol_id": "block_flesh",
+        "word": "Plenty",
+        "loot_weight": 3,
+        "categories": [
+            {
+                "category_id": "BlockSolid",
+                "weight": 3
+            },
+            {
+                "category_id": "BlockStructure",
+                "weight": 4
+            },
+            {
+                "category_id": "BlockTerrain",
+                "weight": 4
+            }
+        ]
+    },
+    {
+        "mod_id": "biomesoplenty",
+        "block_id": "hard_ice",
+        "symbol_id": "block_hard_ice",
+        "word": "Plenty",
+        "loot_weight": 4,
+        "categories": [
+            {
+                "category_id": "BlockSolid",
+                "weight": 4
+            },
+            {
+                "category_id": "BlockStructure",
+                "weight": 5
+            },
+            {
+                "category_id": "BlockTerrain",
+                "weight": 4
+            },
+            {
+                "category_id": "BlockSea",
+                "weight": 4
+            },
+            {
+                "category_id": "BlockCrystal",
+                "weight": 4
+            }
+        ]
+    },
+    {
+        "mod_id": "biomesoplenty",
+        "block_id": "honey_block",
+        "symbol_id": "block_honey",
+        "word": "Plenty",
+        "loot_weight": 4,
+        "categories": [
+            {
+                "category_id": "BlockSolid",
+                "weight": 5
+            },
+            {
+                "category_id": "BlockStructure",
+                "weight": 5
+            },
+            {
+                "category_id": "BlockCrystal",
+                "weight": 5
+            }
+        ],
+        "instability_base": 1.0,
+        "instability_exposed": 2.0
+    },
+    {
+        "mod_id": "biomesoplenty",
+        "block_id": "mud",
+        "symbol_id": "block_mud",
+        "word": "Plenty",
+        "loot_weight": 3,
+        "properties": [
+            {
+                "id": "variant",
+                "value": "mud"
+            }
+        ],
+        "categories": [
+            {
+                "category_id": "BlockSolid",
+                "weight": 3
+            },
+            {
+                "category_id": "BlockStructure",
+                "weight": 4
+            },
+            {
+                "category_id": "BlockTerrain",
+                "weight": 4
+            }
+        ]
+    },
+    {
+        "mod_id": "biomesoplenty",
+        "block_id": "mud_brick_block",
+        "symbol_id": "block_mud_brick",
+        "word": "Plenty",
+        "loot_weight": 2,
+        "categories": [
+            {
+                "category_id": "BlockSolid",
+                "weight": 3
+            },
+            {
+                "category_id": "BlockStructure",
+                "weight": 3
+            },
+            {
+                "category_id": "BlockTerrain",
+                "weight": 4
+            }
+        ]
+    },
+    {
+        "mod_id": "biomesoplenty",
+        "block_id": "white_sand",
+        "symbol_id": "block_white_sand",
+        "word": "Plenty",
+        "loot_weight": 2,
+        "categories": [
+            {
+                "category_id": "BlockSea",
+                "weight": 4
+            }
+        ]
+    }
+]

@@ -3,9 +3,20 @@ package thefloydman.pages.data;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDirt;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
 
@@ -13,84 +24,129 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.xcompwiz.mystcraft.api.symbol.BlockCategory;
 import com.xcompwiz.mystcraft.api.symbol.BlockDescriptor;
 import com.xcompwiz.mystcraft.api.symbol.IAgeSymbol;
 import com.xcompwiz.mystcraft.grammar.GrammarGenerator;
+import com.xcompwiz.mystcraft.instability.InstabilityBlockManager;
+import com.xcompwiz.mystcraft.item.ItemPage;
 import com.xcompwiz.mystcraft.symbol.SymbolManager;
 import com.xcompwiz.mystcraft.world.AgeController;
 import com.xcompwiz.util.CollectionUtils;
 
-import thefloydman.pages.logging.LoggerUtils;
 import thefloydman.pages.symbol.PagesSymbolBase;
 import thefloydman.pages.symbol.modifiers.SymbolBlock;
 
 public class PagesSymbols {
 
-	static String modID = "";
-	static String blockID = "";
-	private static String subID = "";
+	public static final Logger LOGGER = LogManager.getLogger();
+	static String modId = "";
+	static String blockId = "";
+	private static String subId = "";
 	private static String localizationOverride = "";
+	private static String localizationNonstandard = "";
 
-	public static void initialize(File configDir) {
+	public static <V, T> void initialize(File configDir) {
 
-		List<List<String>> blockList = null;
-		try {
-			blockList = new BlockInfo().getBlockInfoFromConfig(configDir);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		JsonArray blockArray = BlockInfo.getBlockInfoFromConfigJson(configDir);
 
-		for (int i = 1; i < blockList.size(); i++) {
-			boolean enabled = Boolean.valueOf(blockList.get(i).get(0));
-			modID = String.valueOf(blockList.get(i).get(1));
-			if (modID.trim().equals("") || modID == null) {
-				modID = "minecraft";
+		for (int i = 0; i < blockArray.size(); i++) {
+			JsonObject blockObject = blockArray.get(i).getAsJsonObject();
+			modId = "minecraft";
+			if (blockObject.get("mod_id") != null) {
+				if (!blockObject.get("mod_id").getAsString().equals("")) {
+					modId = blockObject.get("mod_id").getAsString();
+				}
 			}
-			String word = String.valueOf(blockList.get(i).get(2));
-			int cardRank = Integer.valueOf(blockList.get(i).get(3));
-			blockID = String.valueOf(blockList.get(i).get(4));
-			int meta = Integer.valueOf(blockList.get(i).get(5));
-
-			try {
-				subID = String.valueOf(blockList.get(i).get(6));
-			} catch (ArrayIndexOutOfBoundsException e) {
-			}
-			try {
-				localizationOverride = String.valueOf(blockList.get(i).get(7));
-			} catch (ArrayIndexOutOfBoundsException e) {
-			}
-			int catStart = 8;
-			if (!Loader.isModLoaded(modID) || enabled == false) {
+			if (!Loader.isModLoaded(modId)) {
 				continue;
 			}
-			LoggerUtils.info("Adding page for block " + modID + ":" + blockID, new Object[0]);
-			BlockSymbol page = BlockSymbol.createPage(word, cardRank, Block.getBlockFromName(modID + ":" + blockID),
-					meta);
+			String word = blockObject.get("word").getAsString();
+			int cardRank = blockObject.get("loot_weight").getAsInt();
+			blockId = blockObject.get("block_id").getAsString();
+			String symbolId = blockObject.get("symbol_id").getAsString();
+			if (blockObject.get("localization_nonstandard") != null) {
+				localizationNonstandard = blockObject.get("localization_nonstandard").getAsString();
+				LOGGER.info("Using nonstandard localization for block " + modId + ":" + blockId + " - "
+						+ localizationNonstandard);
+			}
+			if (blockObject.get("localization_override") != null) {
+				localizationOverride = blockObject.get("localization_override").getAsString();
+				LOGGER.info("Using localization override for block " + modId + ":" + blockId + " - "
+						+ localizationOverride);
+			}
+			if (blockObject.get("sub_id") != null) {
+				subId = blockObject.get("sub_id").getAsString();
+				LOGGER.info("Adding sub ID for block " + modId + ":" + blockId + " - " + subId);
+			}
+			IBlockState blockState = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(modId, blockId))
+					.getDefaultState();
+			// Add properties to blockstate.
+			if (blockObject.get("properties") != null) {
+				JsonArray propertiesArray = blockObject.get("properties").getAsJsonArray();
+				for (int j = 0; j < propertiesArray.size(); j++) {
+					JsonObject propertyObject = propertiesArray.get(j).getAsJsonObject();
+					String propertyId = propertyObject.get("id").getAsString();
+					String propertyValue = propertyObject.get("value").getAsString();
+					IProperty property = parseProperty(blockState, propertyId);
+					Comparable value = null;
+					Object[] possibleValues = property.getAllowedValues().toArray();
+					for (Object singleValue : possibleValues) {
+						if (singleValue.toString().equals(propertyValue)) {
+							value = (Comparable) singleValue;
+							break;
+						}
+					}
+					if (value == null) {
+						LOGGER.info("Cannot apply value \"" + propertyValue + "\" to property \"" + propertyId + "\".");
+						continue;
+					}
+					blockState = blockState.withProperty(property, value);
+				}
+			}
+			LOGGER.info("Registering page for block " + modId + ":" + blockId);
+			BlockSymbol page = BlockSymbol.create(word, cardRank, blockState, symbolId);
 			page.register();
-			for (int cat = catStart; cat < blockList.get(i).size(); cat += 2) {
-				if (blockList.get(i).get(cat).equals("")) {
-					break;
-				}
 
-				Field categoryField = null;
-				try {
-					String catLower = String.valueOf(blockList.get(i).get(cat));
-					String catUpper = catLower.toUpperCase();
-					categoryField = Class.forName("com.xcompwiz.mystcraft.api.symbol.BlockCategory").getField(catUpper);
-				} catch (NoSuchFieldException | SecurityException | ClassNotFoundException e) {
-					e.printStackTrace();
+			// Add blockstate to grammar categories.
+			JsonArray categoryArray = blockObject.get("categories").getAsJsonArray();
+			for (int j = 0; j < categoryArray.size(); j++) {
+				JsonObject categoryObject = categoryArray.get(j).getAsJsonObject();
+				String categoryModId = "mystcraft";
+				if (categoryObject.get("mod_id") != null) {
+					if (!categoryObject.get("mod_id").getAsString().trim().equals("")) {
+						categoryModId = categoryObject.get("mod_id").getAsString();
+					}
 				}
-				BlockCategory category = null;
-				try {
-					category = (BlockCategory) categoryField.get(category);
-				} catch (IllegalArgumentException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
+				String categoryId = categoryObject.get("category_id").getAsString();
+				int weight = categoryObject.get("weight").getAsInt();
+				BlockCategory category = BlockCategory
+						.getBlockCategory(new ResourceLocation(categoryModId, categoryId));
+				page.add(category, weight);
+			}
 
-				page.add(category, Integer.valueOf(blockList.get(i).get(cat + 1)));
+			// Add block instability.
+			if (blockObject.get("instability_base") != null && blockObject.get("instability_exposed") != null) {
+				LOGGER.info("Registering instability values for block " + modId + ":" + blockId);
+				float instabilityFactorBase = blockObject.get("instability_base").getAsFloat();
+				float instabilityFactorExposed = blockObject.get("instability_exposed").getAsFloat();
+				InstabilityBlockManager.setInstabilityFactors(blockState, instabilityFactorExposed,
+						instabilityFactorBase);
 			}
 		}
+	}
+
+	protected static IProperty parseProperty(IBlockState state, String propertyName) {
+		Collection<IProperty<?>> propertyCollection = state.getPropertyKeys();
+		for (IProperty<?> property : propertyCollection) {
+			if (property.getName().equals(propertyName)) {
+				return property;
+			}
+		}
+		return null;
 	}
 
 	public static class BlockSymbol {
@@ -117,24 +173,19 @@ public class PagesSymbols {
 			return this;
 		}
 
-		public static BlockSymbol create(final String word, final int cardrank, final IBlockState blockstate) {
+		public static BlockSymbol create(final String word, final int cardrank, final IBlockState blockstate,
+				final String symbolId) {
 			final BlockDescriptor descriptor = new BlockDescriptor(blockstate);
-			final SymbolBlock symbol = new SymbolBlock(descriptor, word, modID, blockID, subID, localizationOverride);
+			final SymbolBlock symbol = new SymbolBlock(descriptor, word, modId, blockId, subId, localizationOverride,
+					symbolId, localizationNonstandard);
 			if (SymbolManager.hasBinding(symbol.getRegistryName())) {
-				LoggerUtils.info("Cannot register symbol because it has already been registered.", new Object[0]);
+				LOGGER.info("Cannot register symbol because it has already been registered.");
 				return new BlockSymbol();
 			}
+			symbol.setWords(
+					new String[] { "Transform", "Constraint", word, symbol.getRegistryName().getResourcePath() });
 			symbol.setCardRank(cardrank);
 			return new BlockSymbol(descriptor, symbol);
-		}
-
-		private static BlockSymbol createPage(final String word, final int cardrank, final Block block,
-				final int metadata) {
-			final IBlockState state = block.getStateFromMeta(metadata);
-			if (state == null) {
-				return null;
-			}
-			return create(word, cardrank, state);
 		}
 
 		public IAgeSymbol getSymbol() {

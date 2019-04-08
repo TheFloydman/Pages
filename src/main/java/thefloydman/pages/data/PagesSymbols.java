@@ -94,6 +94,7 @@ public class PagesSymbols {
 					IProperty property = parseProperty(blockState, propertyId);
 					Comparable value = null;
 					Object[] possibleValues = property.getAllowedValues().toArray();
+					String acceptableValues = "";
 					for (Object singleValue : possibleValues) {
 						if (singleValue.toString().equals(propertyValue)) {
 							value = (Comparable) singleValue;
@@ -101,13 +102,25 @@ public class PagesSymbols {
 						}
 					}
 					if (value == null) {
-						LOGGER.info("Cannot apply value \"" + propertyValue + "\" to property \"" + propertyId + "\".");
+						for (Object singleValue : possibleValues) {
+							acceptableValues += singleValue.toString().toLowerCase() + ", ";
+							if (singleValue.toString().toLowerCase().equals(propertyValue.toLowerCase())) {
+								value = (Comparable) singleValue;
+								break;
+							}
+						}
+						acceptableValues = acceptableValues.substring(0, acceptableValues.length() - 2);
+					}
+					if (value == null) {
+						LOGGER.info("Cannot apply value \"" + propertyValue + "\" to property \"" + propertyId
+								+ "\". Leaving in default state.");
+						LOGGER.info("Acceptable values are: " + acceptableValues);
 						continue;
 					}
 					blockState = blockState.withProperty(property, value);
 				}
 			}
-			LOGGER.info("Registering page for block " + modId + ":" + blockId);
+			LOGGER.info("Registering page for blockstate \"" + blockState + "\".");
 			BlockSymbol page = BlockSymbol.create(word, cardRank, blockState, symbolId);
 			page.register();
 
@@ -130,7 +143,7 @@ public class PagesSymbols {
 
 			// Add block instability.
 			if (blockObject.get("instability_base") != null && blockObject.get("instability_exposed") != null) {
-				LOGGER.info("Registering instability values for block " + modId + ":" + blockId);
+				LOGGER.info("Registering instability values for blockstate \"" + blockState.toString() + "\".");
 				float instabilityFactorBase = blockObject.get("instability_base").getAsFloat();
 				float instabilityFactorExposed = blockObject.get("instability_exposed").getAsFloat();
 				InstabilityBlockManager.setInstabilityFactors(blockState, instabilityFactorExposed,

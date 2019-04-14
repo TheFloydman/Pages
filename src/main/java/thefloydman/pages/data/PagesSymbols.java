@@ -54,6 +54,13 @@ public class PagesSymbols {
 		JsonArray blockArray = BlockInfo.getBlockInfoFromConfigJson(configDir);
 
 		for (int i = 0; i < blockArray.size(); i++) {
+			
+			modId = "";
+			blockId = "";
+			subId = "";
+			localizationOverride = "";
+			localizationNonstandard = "";
+			
 			JsonObject blockObject = blockArray.get(i).getAsJsonObject();
 			modId = "minecraft";
 			if (blockObject.get("mod_id") != null) {
@@ -77,10 +84,6 @@ public class PagesSymbols {
 				localizationOverride = blockObject.get("localization_override").getAsString();
 				LOGGER.info("Using localization override for block " + modId + ":" + blockId + " - "
 						+ localizationOverride);
-			}
-			if (blockObject.get("sub_id") != null) {
-				subId = blockObject.get("sub_id").getAsString();
-				LOGGER.info("Adding sub ID for block " + modId + ":" + blockId + " - " + subId);
 			}
 			IBlockState blockState = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(modId, blockId))
 					.getDefaultState();
@@ -118,6 +121,12 @@ public class PagesSymbols {
 						continue;
 					}
 					blockState = blockState.withProperty(property, value);
+				}
+			}
+			if (blockObject.get("sub_id") != null) {
+				if (!blockObject.get("sub_id").getAsString().trim().isEmpty()) {
+					subId = blockObject.get("sub_id").getAsString();
+					LOGGER.info("Adding sub_id for blockstate \"" + blockState + "\" -> \"" + subId + "\".");
 				}
 			}
 			LOGGER.info("Registering page for blockstate \"" + blockState + "\".");

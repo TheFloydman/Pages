@@ -32,10 +32,19 @@ import thefloydman.pages.util.Reference;
 public class BlockInfo {
 
 	public static String[] fileNames = {
+			"custom",
 			"vanilla",
 			"appliedenergistics2",
 			"biomesoplenty",
-			"custom"
+			"botania",
+			"enderio",
+			"extrautils2",
+			"immersiveengineering",
+			"rftools",
+			"tconstruct",
+			"thaumcraft",
+			"thermalfoundation",
+			"twilightforest"
 			};
 
 	public void checkForConfig(File configDir) throws IOException, URISyntaxException {

@@ -85,13 +85,13 @@ public class SymbolBlock extends PagesSymbolBase {
 
 	@Override
 	public String generateLocalizedName() {
-		if (this.localizationOverride.trim().length() > 0) {
+		if (!this.localizationOverride.trim().isEmpty()) {
 			return this.localizationOverride;
 		}
 
 		String blockName;
 
-		if (this.localizationNonstandard.trim().length() > 0) {
+		if (!this.localizationNonstandard.trim().isEmpty()) {
 			blockName = this.localizationNonstandard.trim();
 			blockName = I18n.format(blockName, new Object[0]);
 			blockName = addBlockIfAbsent(blockName);

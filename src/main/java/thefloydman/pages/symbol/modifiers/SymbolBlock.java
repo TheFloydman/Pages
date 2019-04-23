@@ -47,11 +47,12 @@ public class SymbolBlock extends PagesSymbolBase {
 
 	public static ResourceLocation getSymbolIdentifier(final IBlockState blockstate, @Nullable final String symbolId) {
 		String domain = blockstate.getBlock().getRegistryName().getResourceDomain();
+		domain = domain.trim().equals("") || domain == null ? "minecraft" : domain;
 		if (symbolId != null && !symbolId.isEmpty()) {
-			return new ResourceLocation(domain, symbolId);
+			return new ResourceLocation(Reference.MOD_ID, domain + "_" + symbolId);
 		}
-		return new ResourceLocation(domain,
-				"block_" + blockstate.getBlock().getRegistryName().getResourcePath() + "_"
+		return new ResourceLocation(Reference.MOD_ID,
+				domain + "_" + "block_" + blockstate.getBlock().getRegistryName().getResourcePath() + "_"
 						+ blockstate.getBlock().getMetaFromState(blockstate));
 	}
 

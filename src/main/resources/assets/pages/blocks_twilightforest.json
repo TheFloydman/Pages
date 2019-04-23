@@ -547,7 +547,7 @@
         "mod_id": "twilightforest",
         "block_id": "magic_leaves",
         "sub_id": "2",
-        "symbol_id": "miners",
+        "symbol_id": "block_leaves_miners",
         "word": "Tools",
         "loot_weight": 2,
         "properties": [

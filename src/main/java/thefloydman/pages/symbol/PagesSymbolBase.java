@@ -11,6 +11,6 @@ public abstract class PagesSymbolBase extends SymbolBase {
 
 	@Override
 	public String getUnlocalizedName() {
-		return "pages.symbol." + getRegistryName().getResourcePath();
+		return "pages.symbol." + this.getRegistryName().getResourcePath();
 	}
 }

@@ -1,26 +1,21 @@
-package thefloydman.pages.symbol.modifiers;
+package thefloydman.pages.symbol;
 
 import javax.annotation.Nullable;
 
 import com.xcompwiz.mystcraft.api.symbol.BlockDescriptor;
 import com.xcompwiz.mystcraft.api.symbol.ModifierUtils;
 import com.xcompwiz.mystcraft.api.world.AgeDirector;
-import com.xcompwiz.mystcraft.logging.LoggerUtils;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import thefloydman.pages.symbol.PagesSymbolBase;
 import thefloydman.pages.util.Reference;
 
 public class SymbolBlock extends PagesSymbolBase {
@@ -29,7 +24,6 @@ public class SymbolBlock extends PagesSymbolBase {
 	private String localizationOverride = "";
 	private String localizationNonstandard = "";
 	private String modId = "";
-	private String blockId = "";
 	private String subId = "";
 
 	public SymbolBlock(final BlockDescriptor block, final String word, final String modId, final String blockId,
@@ -38,7 +32,6 @@ public class SymbolBlock extends PagesSymbolBase {
 		super(getSymbolIdentifier(block.blockstate, symbolId));
 		this.blockDescriptor = block;
 		this.modId = modId;
-		this.blockId = blockId;
 		this.subId = subId;
 		this.localizationOverride = localizationOverride;
 		this.localizationNonstandard = localizationNonstandard;

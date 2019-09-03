@@ -1,30 +1,11 @@
 package thefloydman.pages.data;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockDirt;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.ResourceLocation;
-
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
-
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.xcompwiz.mystcraft.api.symbol.BlockCategory;
@@ -32,13 +13,15 @@ import com.xcompwiz.mystcraft.api.symbol.BlockDescriptor;
 import com.xcompwiz.mystcraft.api.symbol.IAgeSymbol;
 import com.xcompwiz.mystcraft.grammar.GrammarGenerator;
 import com.xcompwiz.mystcraft.instability.InstabilityBlockManager;
-import com.xcompwiz.mystcraft.item.ItemPage;
 import com.xcompwiz.mystcraft.symbol.SymbolManager;
-import com.xcompwiz.mystcraft.world.AgeController;
 import com.xcompwiz.util.CollectionUtils;
 
-import thefloydman.pages.symbol.PagesSymbolBase;
-import thefloydman.pages.symbol.modifiers.SymbolBlock;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import thefloydman.pages.symbol.SymbolBlock;
 
 public class PagesSymbols {
 

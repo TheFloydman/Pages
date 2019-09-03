@@ -1,9 +1,11 @@
 package thefloydman.pages;
 
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.item.Item;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -12,18 +14,10 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import thefloydman.pages.data.BlockInfo;
-import thefloydman.pages.data.PagesSymbols;
 import thefloydman.pages.proxy.CommonProxy;
 import thefloydman.pages.util.Reference;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-import org.apache.logging.log4j.Logger;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = Reference.DEPENDENCIES)
 @EventBusSubscriber
@@ -37,6 +31,7 @@ public class Pages {
 	@EventHandler
 	public static void preInit(FMLPreInitializationEvent event) throws IOException, URISyntaxException {
 
+		logger = event.getModLog();
 		proxy.preInit(event);
 
 	}
